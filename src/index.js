@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+function Counter(props) {
+  const [count, setCount] = useState(props.count ? props.count : 0);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+  function decrement(val) {
+    if (val === 0) {
+      return;
+    }
+    setCount(val - 1);
+  }
+
+  function increment(val) {
+    setCount(val + 1);
+  }
+  return (
+    <div>
+      <button onClick={() => decrement(count)}>-</button>
+      <span>{count}</span>
+      <button onClick={() => increment(count)}>+</button>
+    </div>
+  );
+}
+
+ReactDOM.render(<Counter />, document.getElementById('root'));
