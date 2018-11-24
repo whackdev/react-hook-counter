@@ -1,26 +1,42 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import ReactDOM from 'react-dom';
 
-function Counter(props) {
-  const [count, setCount] = useState(props.count ? props.count : 0);
+const initialState = { count: 0 };
 
-  function decrement(val) {
-    if (val === 0) {
-      return;
-    }
-    setCount(val - 1);
-  }
+const INCREMENT = { type: 'INCREMENT' };
+const DECREMENT = { type: 'DECREMENT' };
 
-  function increment(val) {
-    setCount(val + 1);
+function countReducer(state, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + 1 };
+    case 'DECREMENT':
+      return state.count === 0 ? { count: 0 } : { count: state.count - 1 };
+    case 'RESET':
+      return { count: action.payload };
+    default:
+      return state;
   }
+}
+
+function Counter({ initialCount }) {
+  const [state, dispatch] = useReducer(countReducer, initialState, {
+    type: 'RESET',
+    payload: initialCount
+  });
+
   return (
-    <div>
-      <button onClick={() => decrement(count)}>-</button>
-      <span>{count}</span>
-      <button onClick={() => increment(count)}>+</button>
-    </div>
+    <>
+      {state.count}
+      <button onClick={() => dispatch(DECREMENT)}>-</button>
+      <button onClick={() => dispatch(INCREMENT)}>+</button>
+      <button
+        onClick={() => dispatch({ type: 'RESET', payload: initialCount })}
+      >
+        Reset
+      </button>
+    </>
   );
 }
 
-ReactDOM.render(<Counter />, document.getElementById('root'));
+ReactDOM.render(<Counter initialCount={0} />, document.getElementById('root'));
